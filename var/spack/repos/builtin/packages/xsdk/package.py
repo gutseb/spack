@@ -86,7 +86,7 @@ class Xsdk(BundlePackage, CudaPackage, ROCmPackage):
     version('develop')
     version('0.7.0')
     version('0.6.0')
-    version('0.5.0')
+    version('0.5.0', deprecated=True)
     version('0.4.0', deprecated=True)
     version('0.3.0', deprecated=True)
 
@@ -107,8 +107,10 @@ class Xsdk(BundlePackage, CudaPackage, ROCmPackage):
     variant('slate', default=True, description='Enable slate package build')
     variant('arborx', default=True, description='Enable ArborX build')
 
-    xsdk_depends_on('hypre@develop+superlu-dist+shared', when='@develop')
-    xsdk_depends_on('hypre@2.23.0+superlu-dist+shared', when='@0.7.0')
+    xsdk_depends_on('hypre@develop+superlu-dist+shared', when='@develop',
+                    cuda_var='cuda')
+    xsdk_depends_on('hypre@2.23.0+superlu-dist+shared', when='@0.7.0',
+                    cuda_var='cuda')
     xsdk_depends_on('hypre@2.20.0+superlu-dist+shared', when='@0.6.0')
     xsdk_depends_on('hypre@2.18.2+superlu-dist+shared', when='@0.5.0')
     xsdk_depends_on('hypre@2.15.1~internal-superlu', when='@0.4.0')
@@ -143,8 +145,8 @@ class Xsdk(BundlePackage, CudaPackage, ROCmPackage):
                     ' cxxstd=14', when='@0.7.0 +trilinos')
     xsdk_depends_on('trilinos@13.0.1+hypre+superlu-dist+hdf5~mumps+boost' +
                     '~suite-sparse+tpetra+nox+ifpack2+zoltan+zoltan2+amesos2' +
-                    '~exodus~dtk+intrepid2+shards gotype=int',
-                    when='@0.6.0 +trilinos')
+                    '~exodus~dtk+intrepid2+shards gotype=int' +
+                    ' cxxstd=11', when='@0.6.0 +trilinos')
     xsdk_depends_on('trilinos@12.18.1+hypre+superlu-dist+hdf5~mumps+boost' +
                     '~suite-sparse+tpetra+nox+ifpack2+zoltan+zoltan2+amesos2' +
                     '~exodus+dtk+intrepid2+shards', when='@0.5.0 +trilinos')
@@ -167,7 +169,7 @@ class Xsdk(BundlePackage, CudaPackage, ROCmPackage):
     xsdk_depends_on('petsc +batch', when='platform=cray @0.5.0:')
     xsdk_depends_on('petsc@main+mpi+hypre+superlu-dist+metis+hdf5~mumps+double~int64',
                     when='@develop', cuda_var='cuda')
-    xsdk_depends_on('petsc@3.16.0+mpi+hypre+superlu-dist+metis+hdf5~mumps+double~int64',
+    xsdk_depends_on('petsc@3.16.1+mpi+hypre+superlu-dist+metis+hdf5~mumps+double~int64',
                     when='@0.7.0', cuda_var='cuda')
     xsdk_depends_on('petsc@3.14.1+mpi+hypre+superlu-dist+metis+hdf5~mumps+double~int64',
                     when='@0.6.0', cuda_var='cuda')
@@ -269,7 +271,7 @@ class Xsdk(BundlePackage, CudaPackage, ROCmPackage):
 
     xsdk_depends_on('strumpack ~cuda', when='~cuda @0.6.0: +strumpack')
     xsdk_depends_on('strumpack@master~slate~openmp', when='@develop +strumpack')
-    xsdk_depends_on('strumpack@6.0.0~slate~openmp', when='@0.7.0 +strumpack')
+    xsdk_depends_on('strumpack@6.1.0~slate~openmp', when='@0.7.0 +strumpack')
     xsdk_depends_on('strumpack@5.0.0~slate~openmp', when='@0.6.0 +strumpack')
     xsdk_depends_on('strumpack@3.3.0~slate~openmp', when='@0.5.0 +strumpack')
     xsdk_depends_on('strumpack@3.1.1~slate~openmp', when='@0.4.0 +strumpack')
@@ -326,7 +328,7 @@ class Xsdk(BundlePackage, CudaPackage, ROCmPackage):
     xsdk_depends_on('py-libensemble@develop+petsc4py', when='@develop +libensemble')
     xsdk_depends_on('py-petsc4py@main', when='@develop +libensemble')
     xsdk_depends_on('py-libensemble@0.8.0+petsc4py', when='@0.7.0 +libensemble')
-    xsdk_depends_on('py-petsc4py@3.16.0', when='@0.7.0 +libensemble')
+    xsdk_depends_on('py-petsc4py@3.16.1', when='@0.7.0 +libensemble')
     xsdk_depends_on('py-libensemble@0.7.1+petsc4py', when='@0.6.0 +libensemble')
     xsdk_depends_on('py-petsc4py@3.14.0', when='@0.6.0 +libensemble')
     xsdk_depends_on('py-libensemble@0.5.2+petsc4py', when='@0.5.0 +libensemble')
@@ -349,13 +351,8 @@ class Xsdk(BundlePackage, CudaPackage, ROCmPackage):
                     cuda_var=['cuda', '?magma'], rocm_var=['rocm', '?magma'])
     xsdk_depends_on('heffte@2.0.0+fftw', when='@0.6.0 +heffte',
                     cuda_var=['cuda', '?magma'])
-    # openmpi does not use CudaPackage and has no cuda_arch variant
-    xsdk_depends_on('openmpi+cuda', when='+cuda +heffte')
 
     xsdk_depends_on('slate@master', when='@develop +slate %gcc@6.0:', cuda_var='cuda')
     # TODO: should this version have +cuda?
     xsdk_depends_on('slate@2021.05.02 ~cuda', when='@0.7.0 ~cuda +slate %gcc@6.0:')
     xsdk_depends_on('slate@2020.10.00', when='@0.6.0 +slate %gcc@6.0:', cuda_var='cuda')
-
-    # How do we propagate debug flag to all depends on packages ?
-    # If I just do spack install xsdk+debug will that propogate it down?
