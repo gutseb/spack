@@ -9,6 +9,7 @@ import sys
 from spack import *
 from copy import deepcopy
 
+
 def depends_on_accl(accl_name, accl_var, *args, **kwargs):
     if accl_name == 'cuda':
         accl_arch_name = 'cuda_arch'
@@ -29,14 +30,15 @@ def depends_on_accl(accl_name, accl_var, *args, **kwargs):
         else:
             accl_var[idx] = var.replace('?', '')
         # if '?cuda' skip adding '~cuda' dep
-        if var == '?'+accl_name: usedep = 0
+        if var == '?' + accl_name:
+            usedep = 0
     kwargs_new = deepcopy(kwargs)
     if 'when' in kwargs_new:
-        kwargs_new['when'] += ' ~'+accl_name
+        kwargs_new['when'] += ' ~' + accl_name
     else:
-        kwargs_new['when'] = '~'+accl_name
+        kwargs_new['when'] = '~' + accl_name
     if usedep:
-      depends_on(*args_new, **kwargs_new)
+        depends_on(*args_new, **kwargs_new)
 
     # require +cuda when xsdk+cuda, and match the arch
     for arch in accl_arch_values:
@@ -112,12 +114,18 @@ class Xsdk(BundlePackage, CudaPackage, ROCmPackage):
     xsdk_depends_on('hypre@2.15.1~internal-superlu', when='@0.4.0')
     xsdk_depends_on('hypre@2.12.1~internal-superlu', when='@0.3.0')
 
-    xsdk_depends_on('mfem@develop+mpi+superlu-dist+petsc+sundials+examples+miniapps', when='@develop', cuda_var='cuda', rocm_var='rocm')
-    xsdk_depends_on('mfem@4.3.0+mpi+superlu-dist+petsc+sundials+examples+miniapps', when='@0.7.0', cuda_var='cuda', rocm_var='rocm')
-    xsdk_depends_on('mfem@4.2.0+mpi+superlu-dist+petsc+sundials+examples+miniapps', when='@0.6.0', cuda_var='cuda')
-    xsdk_depends_on('mfem@4.0.1-xsdk+mpi~superlu-dist+petsc+sundials+examples+miniapps', when='@0.5.0')
-    xsdk_depends_on('mfem@3.4.0+mpi+superlu-dist+petsc+sundials+examples+miniapps', when='@0.4.0')
-    xsdk_depends_on('mfem@3.3.2+mpi+superlu-dist+petsc+sundials+examples+miniapps', when='@0.3.0')
+    xsdk_depends_on('mfem@develop+mpi+superlu-dist+petsc+sundials+examples+miniapps',
+                    when='@develop', cuda_var='cuda', rocm_var='rocm')
+    xsdk_depends_on('mfem@4.3.0+mpi+superlu-dist+petsc+sundials+examples+miniapps',
+                    when='@0.7.0', cuda_var='cuda', rocm_var='rocm')
+    xsdk_depends_on('mfem@4.2.0+mpi+superlu-dist+petsc+sundials+examples+miniapps',
+                    when='@0.6.0', cuda_var='cuda')
+    xsdk_depends_on('mfem@4.0.1-xsdk+mpi~superlu-dist+petsc+sundials+examples+miniapps',
+                    when='@0.5.0')
+    xsdk_depends_on('mfem@3.4.0+mpi+superlu-dist+petsc+sundials+examples+miniapps',
+                    when='@0.4.0')
+    xsdk_depends_on('mfem@3.3.2+mpi+superlu-dist+petsc+sundials+examples+miniapps',
+                    when='@0.3.0')
 
     xsdk_depends_on('superlu-dist@develop', when='@develop')
     xsdk_depends_on('superlu-dist@7.1.1', when='@0.7.0')
@@ -125,24 +133,35 @@ class Xsdk(BundlePackage, CudaPackage, ROCmPackage):
     xsdk_depends_on('superlu-dist@6.1.1', when='@0.5.0')
     xsdk_depends_on('superlu-dist@6.1.0', when='@0.4.0')
     xsdk_depends_on('superlu-dist@5.2.2', when='@0.3.0')
-
-    xsdk_depends_on('trilinos@develop+hypre+superlu-dist+hdf5~mumps+boost~suite-sparse+tpetra+nox+ifpack2+zoltan+zoltan2+amesos2~exodus~dtk+intrepid2+shards+stratimikos gotype=int cxxstd=14',
-                    when='@develop +trilinos')
-    xsdk_depends_on('trilinos@13.2.0+hypre+superlu-dist+hdf5~mumps+boost~suite-sparse+tpetra+nox+ifpack2+zoltan+zoltan2+amesos2~exodus~dtk+intrepid2+shards+stratimikos gotype=int cxxstd=14',
-                    when='@0.7.0 +trilinos')
-    xsdk_depends_on('trilinos@13.0.1+hypre+superlu-dist+hdf5~mumps+boost~suite-sparse+tpetra+nox+ifpack2+zoltan+zoltan2+amesos2~exodus~dtk+intrepid2+shards gotype=int',
+    xsdk_depends_on('trilinos@develop+hypre+superlu-dist+hdf5~mumps+boost' +
+                    '~suite-sparse+tpetra+nox+ifpack2+zoltan+zoltan2+amesos2' +
+                    '~exodus~dtk+intrepid2+shards+stratimikos gotype=int' +
+                    ' cxxstd=14', when='@develop +trilinos')
+    xsdk_depends_on('trilinos@13.2.0+hypre+superlu-dist+hdf5~mumps+boost' +
+                    '~suite-sparse+tpetra+nox+ifpack2+zoltan+zoltan2+amesos2' +
+                    '~exodus~dtk+intrepid2+shards+stratimikos gotype=int' +
+                    ' cxxstd=14', when='@0.7.0 +trilinos')
+    xsdk_depends_on('trilinos@13.0.1+hypre+superlu-dist+hdf5~mumps+boost' +
+                    '~suite-sparse+tpetra+nox+ifpack2+zoltan+zoltan2+amesos2' +
+                    '~exodus~dtk+intrepid2+shards gotype=int',
                     when='@0.6.0 +trilinos')
-    xsdk_depends_on('trilinos@12.18.1+hypre+superlu-dist+hdf5~mumps+boost~suite-sparse+tpetra+nox+ifpack2+zoltan+zoltan2+amesos2~exodus+dtk+intrepid2+shards',
-                    when='@0.5.0 +trilinos')
-    xsdk_depends_on('trilinos@12.14.1+hypre+superlu-dist+hdf5~mumps+boost~suite-sparse+tpetra+nox+ifpack2+zoltan+zoltan2+amesos2~exodus+dtk+intrepid2+shards',
-                    when='@0.4.0 +trilinos')
-    xsdk_depends_on('trilinos@12.12.1+hypre+superlu-dist+hdf5~mumps+boost~suite-sparse~tpetra~ifpack2~zoltan~zoltan2~amesos2~exodus',
-                    when='@0.3.0 +trilinos')
+    xsdk_depends_on('trilinos@12.18.1+hypre+superlu-dist+hdf5~mumps+boost' +
+                    '~suite-sparse+tpetra+nox+ifpack2+zoltan+zoltan2+amesos2' +
+                    '~exodus+dtk+intrepid2+shards', when='@0.5.0 +trilinos')
+    xsdk_depends_on('trilinos@12.14.1+hypre+superlu-dist+hdf5~mumps+boost' +
+                    '~suite-sparse+tpetra+nox+ifpack2+zoltan+zoltan2+amesos2' +
+                    '~exodus+dtk+intrepid2+shards', when='@0.4.0 +trilinos')
+    xsdk_depends_on('trilinos@12.12.1+hypre+superlu-dist+hdf5~mumps+boost' +
+                    '~suite-sparse~tpetra~ifpack2~zoltan~zoltan2~amesos2'
+                    '~exodus', when='@0.3.0 +trilinos')
 
-    xsdk_depends_on('datatransferkit@master', when='@develop +trilinos +datatransferkit')
+    xsdk_depends_on('datatransferkit@master',
+                    when='@develop +trilinos +datatransferkit')
     dtk7ver = '3.1-rc2' if sys.platform == 'darwin' else '3.1-rc3'
-    xsdk_depends_on('datatransferkit@'+dtk7ver, when='@0.7.0 +trilinos +datatransferkit')
-    xsdk_depends_on('datatransferkit@3.1-rc2', when='@0.6.0 +trilinos +datatransferkit')
+    xsdk_depends_on('datatransferkit@' + dtk7ver,
+                    when='@0.7.0 +trilinos +datatransferkit')
+    xsdk_depends_on('datatransferkit@3.1-rc2',
+                    when='@0.6.0 +trilinos +datatransferkit')
 
     xsdk_depends_on('petsc +trilinos', when='+trilinos @:0.6.0')
     xsdk_depends_on('petsc +batch', when='platform=cray @0.5.0:')
@@ -161,11 +180,21 @@ class Xsdk(BundlePackage, CudaPackage, ROCmPackage):
 
     xsdk_depends_on('dealii +trilinos~adol-c', when='+trilinos +dealii')
     xsdk_depends_on('dealii ~trilinos', when='~trilinos +dealii')
-    xsdk_depends_on('dealii@master~assimp~python~doc~gmsh+petsc+slepc+mpi~int64+hdf5~netcdf+metis~sundials~ginkgo~symengine~nanoflann~simplex~arborx', when='@develop +dealii')
-    xsdk_depends_on('dealii@9.3.2~assimp~python~doc~gmsh+petsc+slepc+mpi~int64+hdf5~netcdf+metis~sundials~ginkgo~symengine~simplex~arborx', when='@0.7.0 +dealii')
-    xsdk_depends_on('dealii@9.2.0~assimp~python~doc~gmsh+petsc+slepc+mpi~int64+hdf5~netcdf+metis~sundials~ginkgo~symengine~simplex~arborx', when='@0.6.0 +dealii')
-    xsdk_depends_on('dealii@9.1.1~assimp~python~doc~gmsh+petsc+slepc+mpi~int64+hdf5~netcdf+metis~sundials~ginkgo~symengine', when='@0.5.0 +dealii')
-    xsdk_depends_on('dealii@9.0.1~assimp~python~doc~gmsh+petsc~slepc+mpi~int64+hdf5~netcdf+metis~ginkgo~symengine', when='@0.4.0 +dealii')
+    xsdk_depends_on('dealii@master~assimp~python~doc~gmsh+petsc+slepc+mpi~int64+hdf5' +
+                    '~netcdf+metis~sundials~ginkgo~symengine~nanoflann~simplex~arborx',
+                    when='@develop +dealii')
+    xsdk_depends_on('dealii@9.3.2~assimp~python~doc~gmsh+petsc+slepc+mpi~int64+hdf5' +
+                    '~netcdf+metis~sundials~ginkgo~symengine~simplex~arborx',
+                    when='@0.7.0 +dealii')
+    xsdk_depends_on('dealii@9.2.0~assimp~python~doc~gmsh+petsc+slepc+mpi~int64+hdf5' +
+                    '~netcdf+metis~sundials~ginkgo~symengine~simplex~arborx',
+                    when='@0.6.0 +dealii')
+    xsdk_depends_on('dealii@9.1.1~assimp~python~doc~gmsh+petsc+slepc+mpi~int64+hdf5' +
+                    '~netcdf+metis~sundials~ginkgo~symengine',
+                    when='@0.5.0 +dealii')
+    xsdk_depends_on('dealii@9.0.1~assimp~python~doc~gmsh+petsc~slepc+mpi~int64+hdf5' +
+                    '~netcdf+metis~ginkgo~symengine',
+                    when='@0.4.0 +dealii')
 
     xsdk_depends_on('pflotran@develop', when='@develop')
     xsdk_depends_on('pflotran@3.0.2', when='@0.7.0')
@@ -182,9 +211,12 @@ class Xsdk(BundlePackage, CudaPackage, ROCmPackage):
     xsdk_depends_on('alquimia@xsdk-0.3.0', when='@0.3.0 +alquimia')
 
     xsdk_depends_on('sundials +trilinos', when='+trilinos @0.6.0:')
-    xsdk_depends_on('sundials@develop~int64+hypre+petsc+superlu-dist', when='@develop', cuda_var='cuda', rocm_var='rocm')
-    xsdk_depends_on('sundials@5.8.0~int64+hypre+petsc+superlu-dist', when='@0.7.0', cuda_var='cuda', rocm_var='rocm')
-    xsdk_depends_on('sundials@5.5.0~int64+hypre+petsc+superlu-dist', when='@0.6.0', cuda_var='cuda')
+    xsdk_depends_on('sundials@develop~int64+hypre+petsc+superlu-dist',
+                    when='@develop', cuda_var='cuda', rocm_var='rocm')
+    xsdk_depends_on('sundials@5.8.0~int64+hypre+petsc+superlu-dist',
+                    when='@0.7.0', cuda_var='cuda', rocm_var='rocm')
+    xsdk_depends_on('sundials@5.5.0~int64+hypre+petsc+superlu-dist',
+                    when='@0.6.0', cuda_var='cuda')
     xsdk_depends_on('sundials@5.0.0~int64+hypre+petsc+superlu-dist', when='@0.5.0')
     xsdk_depends_on('sundials@3.2.1~int64+hypre', when='@0.4.0')
     xsdk_depends_on('sundials@3.1.0~int64+hypre', when='@0.3.0')
@@ -202,12 +234,18 @@ class Xsdk(BundlePackage, CudaPackage, ROCmPackage):
     xsdk_depends_on('magma@2.4.0', when='@0.4.0', cuda_var='?cuda')
     xsdk_depends_on('magma@2.2.0', when='@0.3.0', cuda_var='?cuda')
 
-    xsdk_depends_on('amrex@develop+sundials', when='@develop %intel', cuda_var='cuda', rocm_var='rocm')
-    xsdk_depends_on('amrex@develop+sundials', when='@develop %gcc', cuda_var='cuda', rocm_var='rocm')
-    xsdk_depends_on('amrex@develop+sundials', when='@develop %cce', cuda_var='cuda', rocm_var='rocm')
-    xsdk_depends_on('amrex@21.10+sundials', when='@0.7.0 %intel', cuda_var='cuda', rocm_var='rocm')
-    xsdk_depends_on('amrex@21.10+sundials', when='@0.7.0 %gcc', cuda_var='cuda', rocm_var='rocm')
-    xsdk_depends_on('amrex@21.10+sundials', when='@0.7.0 %cce', cuda_var='cuda', rocm_var='rocm')
+    xsdk_depends_on('amrex@develop+sundials',
+                    when='@develop %intel', cuda_var='cuda', rocm_var='rocm')
+    xsdk_depends_on('amrex@develop+sundials',
+                    when='@develop %gcc', cuda_var='cuda', rocm_var='rocm')
+    xsdk_depends_on('amrex@develop+sundials',
+                    when='@develop %cce', cuda_var='cuda', rocm_var='rocm')
+    xsdk_depends_on('amrex@21.10+sundials',
+                    when='@0.7.0 %intel', cuda_var='cuda', rocm_var='rocm')
+    xsdk_depends_on('amrex@21.10+sundials',
+                    when='@0.7.0 %gcc', cuda_var='cuda', rocm_var='rocm')
+    xsdk_depends_on('amrex@21.10+sundials',
+                    when='@0.7.0 %cce', cuda_var='cuda', rocm_var='rocm')
     xsdk_depends_on('amrex@20.10', when='@0.6.0 %intel')
     xsdk_depends_on('amrex@20.10', when='@0.6.0 %gcc')
     xsdk_depends_on('amrex@19.08', when='@0.5.0 %intel')
@@ -243,12 +281,17 @@ class Xsdk(BundlePackage, CudaPackage, ROCmPackage):
     xsdk_depends_on('pumi@2.2.0', when='@0.4.0')
 
     tasmanian_openmp = '~openmp' if sys.platform == 'darwin' else '+openmp'
-    xsdk_depends_on('tasmanian@develop+xsdkflags+blas' + tasmanian_openmp, when='@develop', cuda_var=['cuda', '?magma'], rocm_var=['rocm', '?magma'])
-    xsdk_depends_on('tasmanian@7.7+xsdkflags+mpi+blas' + tasmanian_openmp, when='@0.7.0', cuda_var=['cuda', '?magma'])
-    #xsdk_depends_on('tasmanian@7.7+xsdkflags+mpi+blas' + tasmanian_openmp, when='@0.7.0', cuda_var=['cuda', '?magma'], rocm_var=['rocm', '?magma']) # TODO: not sure why this causes a conflict
-    xsdk_depends_on('tasmanian@7.3+xsdkflags+mpi+blas' + tasmanian_openmp, when='@0.6.0', cuda_var=['cuda', '?magma'])
-    xsdk_depends_on('tasmanian@7.0+xsdkflags+mpi+blas' + tasmanian_openmp, when='@0.5.0', cuda_var=['cuda', '?magma'])
-    xsdk_depends_on('tasmanian@6.0+xsdkflags+blas~openmp', when='@0.4.0', cuda_var=['cuda', '?magma'])
+    xsdk_depends_on('tasmanian@develop+xsdkflags+blas' + tasmanian_openmp,
+                    when='@develop',
+                    cuda_var=['cuda', '?magma'], rocm_var=['rocm', '?magma'])
+    xsdk_depends_on('tasmanian@7.7+xsdkflags+mpi+blas' + tasmanian_openmp,
+                    when='@0.7.0', cuda_var=['cuda', '?magma'])
+    xsdk_depends_on('tasmanian@7.3+xsdkflags+mpi+blas' + tasmanian_openmp,
+                    when='@0.6.0', cuda_var=['cuda', '?magma'])
+    xsdk_depends_on('tasmanian@7.0+xsdkflags+mpi+blas' + tasmanian_openmp,
+                    when='@0.5.0', cuda_var=['cuda', '?magma'])
+    xsdk_depends_on('tasmanian@6.0+xsdkflags+blas~openmp', when='@0.4.0',
+                    cuda_var=['cuda', '?magma'])
 
     xsdk_depends_on('arborx@master', when='@develop +arborx')
     xsdk_depends_on('arborx@1.1', when='@0.7.0 +arborx')
@@ -261,25 +304,33 @@ class Xsdk(BundlePackage, CudaPackage, ROCmPackage):
 
     xsdk_depends_on('phist kernel_lib=tpetra', when='+trilinos +phist')
     xsdk_depends_on('phist kernel_lib=petsc', when='~trilinos +phist')
-    xsdk_depends_on('phist@develop ~fortran ~scamac ~openmp ~host ~int64', when='@develop +phist')
-    xsdk_depends_on('phist@1.9.5 ~fortran ~scamac ~openmp ~host ~int64', when='@0.7.0 +phist')
-    xsdk_depends_on('phist@1.9.3 ~fortran ~scamac ~openmp ~host ~int64', when='@0.6.0 +phist')
-    xsdk_depends_on('phist@1.8.0 ~fortran ~scamac ~openmp ~host ~int64', when='@0.5.0 +phist')
-    xsdk_depends_on('phist@1.7.5 ~fortran ~scamac ~openmp ~host ~int64', when='@0.4.0 +phist')
+    xsdk_depends_on('phist@develop ~fortran ~scamac ~openmp ~host ~int64',
+                    when='@develop +phist')
+    xsdk_depends_on('phist@1.9.5 ~fortran ~scamac ~openmp ~host ~int64',
+                    when='@0.7.0 +phist')
+    xsdk_depends_on('phist@1.9.3 ~fortran ~scamac ~openmp ~host ~int64',
+                    when='@0.6.0 +phist')
+    xsdk_depends_on('phist@1.8.0 ~fortran ~scamac ~openmp ~host ~int64',
+                    when='@0.5.0 +phist')
+    xsdk_depends_on('phist@1.7.5 ~fortran ~scamac ~openmp ~host ~int64',
+                    when='@0.4.0 +phist')
 
-    xsdk_depends_on('ginkgo@develop ~openmp', when='@develop +ginkgo', cuda_var='cuda', rocm_var='rocm')
-    xsdk_depends_on('ginkgo@1.4.0 ~openmp', when='@0.7.0 +ginkgo', cuda_var='cuda', rocm_var='rocm')
-    xsdk_depends_on('ginkgo@1.3.0 ~openmp', when='@0.6.0 +ginkgo', cuda_var='cuda')
+    xsdk_depends_on('ginkgo@develop ~openmp', when='@develop +ginkgo',
+                    cuda_var='cuda', rocm_var='rocm')
+    xsdk_depends_on('ginkgo@1.4.0 ~openmp',
+                    when='@0.7.0 +ginkgo', cuda_var='cuda', rocm_var='rocm')
+    xsdk_depends_on('ginkgo@1.3.0 ~openmp',
+                    when='@0.6.0 +ginkgo', cuda_var='cuda')
     xsdk_depends_on('ginkgo@1.1.0 ~openmp', when='@0.5.0 +ginkgo')
 
-    xsdk_depends_on('py-libensemble@develop+petsc4py', type='run', when='@develop +libensemble')
-    xsdk_depends_on('py-petsc4py@main', type='run', when='@develop +libensemble')
-    xsdk_depends_on('py-libensemble@0.8.0+petsc4py', type='run', when='@0.7.0 +libensemble')
-    xsdk_depends_on('py-petsc4py@3.16.0', type='run', when='@0.7.0 +libensemble')
-    xsdk_depends_on('py-libensemble@0.7.1+petsc4py', type='run', when='@0.6.0 +libensemble')
-    xsdk_depends_on('py-petsc4py@3.14.0', type='run', when='@0.6.0 +libensemble')
-    xsdk_depends_on('py-libensemble@0.5.2+petsc4py', type='run', when='@0.5.0 +libensemble')
-    xsdk_depends_on('py-petsc4py@3.12.0', type='run', when='@0.5.0 +libensemble')
+    xsdk_depends_on('py-libensemble@develop+petsc4py', when='@develop +libensemble')
+    xsdk_depends_on('py-petsc4py@main', when='@develop +libensemble')
+    xsdk_depends_on('py-libensemble@0.8.0+petsc4py', when='@0.7.0 +libensemble')
+    xsdk_depends_on('py-petsc4py@3.16.0', when='@0.7.0 +libensemble')
+    xsdk_depends_on('py-libensemble@0.7.1+petsc4py', when='@0.6.0 +libensemble')
+    xsdk_depends_on('py-petsc4py@3.14.0', when='@0.6.0 +libensemble')
+    xsdk_depends_on('py-libensemble@0.5.2+petsc4py', when='@0.5.0 +libensemble')
+    xsdk_depends_on('py-petsc4py@3.12.0', when='@0.5.0 +libensemble')
 
     xsdk_depends_on('precice ~petsc', when='platform=cray +precice')
     xsdk_depends_on('precice@develop', when='@develop +precice')
@@ -292,13 +343,18 @@ class Xsdk(BundlePackage, CudaPackage, ROCmPackage):
     xsdk_depends_on('butterflypack@1.2.1', when='@0.6.0 +butterflypack')
     xsdk_depends_on('butterflypack@1.1.0', when='@0.5.0 +butterflypack')
 
-    xsdk_depends_on('heffte@develop+fftw', when='@develop +heffte', cuda_var=['cuda', '?magma'], rocm_var=['rocm', '?magma'])
-    xsdk_depends_on('heffte@2.2.0+fftw', when='@0.7.0 +heffte', cuda_var=['cuda', '?magma'], rocm_var=['rocm', '?magma'])
-    xsdk_depends_on('heffte@2.0.0+fftw', when='@0.6.0 +heffte', cuda_var=['cuda', '?magma'])
-    xsdk_depends_on('openmpi+cuda', when='+cuda +heffte') # openmpi does not use CudaPackage and has no cuda_arch variant
+    xsdk_depends_on('heffte@develop+fftw', when='@develop +heffte',
+                    cuda_var=['cuda', '?magma'], rocm_var=['rocm', '?magma'])
+    xsdk_depends_on('heffte@2.2.0+fftw', when='@0.7.0 +heffte',
+                    cuda_var=['cuda', '?magma'], rocm_var=['rocm', '?magma'])
+    xsdk_depends_on('heffte@2.0.0+fftw', when='@0.6.0 +heffte',
+                    cuda_var=['cuda', '?magma'])
+    # openmpi does not use CudaPackage and has no cuda_arch variant
+    xsdk_depends_on('openmpi+cuda', when='+cuda +heffte')
 
     xsdk_depends_on('slate@master', when='@develop +slate %gcc@6.0:', cuda_var='cuda')
-    xsdk_depends_on('slate@2021.05.02 ~cuda', when='@0.7.0 ~cuda +slate %gcc@6.0:') # TODO: should this version have +cuda?
+    # TODO: should this version have +cuda?
+    xsdk_depends_on('slate@2021.05.02 ~cuda', when='@0.7.0 ~cuda +slate %gcc@6.0:')
     xsdk_depends_on('slate@2020.10.00', when='@0.6.0 +slate %gcc@6.0:', cuda_var='cuda')
 
     # How do we propagate debug flag to all depends on packages ?
