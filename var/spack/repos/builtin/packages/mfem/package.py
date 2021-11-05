@@ -293,6 +293,7 @@ class Mfem(Package, CudaPackage, ROCmPackage):
         depends_on('amgx~mpi cuda_arch={0}'.format(sm_),
                    when='+amgx~mpi cuda_arch={0}'.format(sm_))
 
+    patch('2445.diff', when='@4.3.0')
     patch('mfem_ppc_build.patch', when='@3.2:3.3.0 arch=ppc64le')
     patch('mfem-3.4.patch', when='@3.4.0')
     patch('mfem-3.3-3.4-petsc-3.9.patch',
